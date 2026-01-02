@@ -1,0 +1,5 @@
+com\emsi\serviceclient\ServiceClientApplication.class
+com\emsi\serviceclient\AppConfig.class
+com\emsi\serviceclient\CarClient.class
+com\emsi\serviceclient\ClientController.class
+com\emsi\serviceclient\Car.class

@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  consul:
+    image: hashicorp/consul:latest
+    container_name: consul-server
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    command: "agent -server -ui -node=server-1 -bootstrap-expect=1 -client=0.0.0.0"
+    volumes:
+      - consul-data:/consul/data
+    networks:
+      - microservices-net
+
+  service-voiture:
+    build: ./service-voiture
+    container_name: service-voiture
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_CLOUD_CONSUL_PORT=8500
+    depends_on:
+      - consul
+    networks:
+      - microservices-net
+
+  service-client:
+    build: ./service-client
+    container_name: service-client
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_CLOUD_CONSUL_PORT=8500
+    depends_on:
+      - consul
+      - service-voiture
+    networks:
+      - microservices-net
+
+volumes:
+  consul-data:
+
+networks:
+  microservices-net:
+    driver: bridge
